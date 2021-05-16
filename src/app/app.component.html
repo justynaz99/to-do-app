@@ -1,30 +1,74 @@
+<div style="width: 50% !important; min-width: 500px; margin: 50px">
+  <p-card header="LISTA ZADAŃ">
 
-<div style="margin: 50px">
 
-  <input type="text" pInputText style="width: 500px; margin-right: 5px;"/>
-  <button pButton type="button" label="Dodaj" ></button>
-
-</div>
-
-<div style="margin: 50px">
-
-  <p-table style="margin-top: 20px">
-    <ng-template pTemplate="header">
-      <tr>
-        <th>Zadania</th>
-      </tr>
+    <ng-container *ngIf="editMode; then editOn; else editOff" class="margin"></ng-container>
+    <ng-template #editOff>
+      <button pButton pRipple type="button" label="Dodaj zadanie" class="p-button-raised p-button-text"
+              (click)="switchEditMode()" style="margin-bottom: 20px"></button>
+      <br>
     </ng-template>
-    <ng-template pTemplate="body">
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
+    <ng-template #editOn>
+      <button pButton pRipple type="button" label="Zakończ" class="p-button-raised p-button-text"
+              (click)="switchEditMode()" style="margin-bottom: 20px"></button>
+      <br>
     </ng-template>
-  </p-table>
 
 
+    <ng-container *ngIf="editMode">
+      <input type="text" pInputText style="width: 80%; margin-right: 5px; margin-bottom: 20px"
+             placeholder="Dodaj zadanie"
+             #nameInput [(ngModel)]='taskName'/>
+      <button pButton pRipple type="button" icon="pi pi-plus" class="p-button-raised p-button-text" (click)="createTask();
+          nameInput.value = '';" style="margin-bottom: 20px"></button>
+    </ng-container>
+
+
+
+      <p-table [value]="tasks" *ngIf="tasks.length > 0; else noTasks">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Zadania</th>
+            <th></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-task>
+          <ng-container>
+            <tr>
+              <ng-container *ngIf="task.done == false">
+                <td>{{task.name}}</td>
+              </ng-container>
+              <ng-container *ngIf="task.done == true">
+                <td style="text-decoration: line-through">{{task.name}}</td>
+              </ng-container>
+              <td>
+                <button pButton pRipple type="button" icon="pi pi-check" class="p-button-rounded p-button-raised p-button-text"
+                        style="margin-right: 10px"
+                        (click)="markTaskAsDone(task)" *ngIf="!task.done"></button>
+                <button pButton pRipple type="button" icon="pi pi-check" class="p-button-rounded p-button-raised p-button-text"
+                        style="margin-right: 10px" *ngIf="task.done" disabled="true"></button>
+                <button pButton pRipple type="button" icon="pi pi-times"
+                        class="p-button-rounded p-button-danger p-button-rounded p-button-raised p-button-text"
+                        (click)="deleteTask(task)"></button>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-template>
+      </p-table>
+
+      <ng-template #noTasks>
+        <p-table>
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Brak zadań na dzisiaj</th>
+              <th></th>
+            </tr>
+          </ng-template>
+        </p-table>
+      </ng-template>
+
+
+
+  </p-card>
 </div>
-
 
